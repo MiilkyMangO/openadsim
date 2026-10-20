@@ -2,7 +2,7 @@
 # `openadstack/openadstack/utils/scripts/render_compose_sources.py --root-dir carla-simulation`
 
 include:
-  - oci://ghcr.io/openads-project/carla-scenario-runner/compose:v0.10.0-1.1.1
+  - oci://ghcr.io/openads-project/carla-scenario-runner/compose:v0.10.0-1.1.2
 
 services:
 
@@ -32,12 +32,13 @@ services:
       service: carla-scenario-runner-ros
     environment:
       SCENARIO_MAP: ${CUSTOM_OPENDRIVE:-${MAP:-}}
+      INVALID_SCENARIOS_FILE: /tmp/invalid_scenarios.txt
     command:
       - /bin/bash
       - -ic
       - |
         set -e
-        python3 /scenario_checker.py validate-runtime /scenarios
+        python3 /scenario_checker.py validate-runtime /scenarios --invalid-list "$${INVALID_SCENARIOS_FILE}"
         SCENARIOS_DIR=/scenarios
         if [ -n "$${CUSTOM_OPENDRIVE}" ]; then
           SCENARIOS_DIR="$$(dirname "/$${CUSTOM_OPENDRIVE#/}")"
