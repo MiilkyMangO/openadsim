@@ -32,12 +32,13 @@ services:
       service: carla-scenario-runner-ros
     environment:
       SCENARIO_MAP: ${CUSTOM_OPENDRIVE:-${MAP:-}}
+      INVALID_SCENARIOS_FILE: /tmp/invalid_scenarios.txt
     command:
       - /bin/bash
       - -ic
       - |
         set -e
-        python3 /scenario_checker.py validate-runtime /scenarios
+        python3 /scenario_checker.py validate-runtime /scenarios --invalid-list "$${INVALID_SCENARIOS_FILE}"
         SCENARIOS_DIR=/scenarios
         if [ -n "$${CUSTOM_OPENDRIVE}" ]; then
           SCENARIOS_DIR="$$(dirname "/$${CUSTOM_OPENDRIVE#/}")"
