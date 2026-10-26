@@ -7,7 +7,6 @@ services:
     extends:
       file: ../../openadstack/planning/lanelet2_route_planning/docker-compose.yml
       service: planning.lanelet2-route-planning
-    image: ghcr.io/openads-project/lanelet2_route_planning:latest_fix-right-of-way-regulatory-elements_ci
     environment:
       PARAMS: /params.yml
     volumes:
@@ -20,7 +19,7 @@ services:
   #   extends:
   #     file: ../../openadstack/utils/compose/docker-compose.template.yml
   #     service: ros2-service
-  #   image: ghcr.io/openads-project/lanelet2_route_planning:latest
+  #   image: ghcr.io/openads-project/lanelet2_route_planning:v2.1.0
   #   command:
   #     - /bin/bash
   #     - -ic
