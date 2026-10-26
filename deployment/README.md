@@ -1,58 +1,48 @@
 # Helmfile deployment
 
-This directory contains the OpenADSim-specific inputs and manually maintained additions for the generic [Helmfile generator](https://github.com/openads-project/openads-helm/tree/main/utils/generate_helmfile_from_compose).
+This directory contains the OpenADSim-specific inputs and manual additions for the [openads-helm generator](https://github.com/openads-project/openads-helm/tree/main/utils/generate_helmfile_from_compose), which converts `docker-compose.yml` into a Helmfile setup.
 
 ## Layout
 
-- `helmfile.yaml` is the entrypoint. It loads the manual add-ons before the generated services.
-- `addons/` contains the middleware bridge NetworkPolicy and is never overwritten by the generator.
-- `chart-map.yaml` contains OpenADSim-specific chart references and conversion rules.
-- `generated/` is replaceable generator output. It is ignored by Git and must not be committed.
+- `helmfile.yaml` is the entrypoint. It loads the add-ons and the generated services.
+- `chart-map.yaml` contains chart references and conversion rules that cannot be derived from Compose.
+- `addons/` contains manually maintained releases: a NetworkPolicy that isolates the middleware bridge per stack, deployed with the `carla` profile.
+- `generated/` is the generator output. It is ignored by Git and must not be committed.
 
 ## CI
 
-The [`Helmfile` workflow](../.github/workflows/helmfile.yml) calls the reusable workflow from `openads-helm`. It generates `deployment/generated`, validates the root Helmfile with `helmfile build` and `helmfile template`, copies the repository-root `.env` into the ephemeral bundle, and packages the complete `deployment` directory. The source tree keeps only the root `.env`; the copy exists only in the CI artifact.
+The [GitHub workflow](../.github/workflows/helmfile.yml) and the [GitLab pipeline](../.gitlab-ci.yml) use the reusable templates from `openads-helm`. They generate `deployment/generated`, validate it with `helmfile`, and package the `deployment` directory together with the root `.env` as a bundle (kept as a CI artifact for seven days). Builds from the default branch and version tags are additionally published as an OCI artifact.
 
-Successful runs provide a seven-day Actions artifact. Builds from the default branch and semantic-version tags are additionally published as an OCI artifact.
+## Local usage
 
-## Local generation and validation
-
-Use a sibling checkout of `openads-helm`, or point `OPENADS_HELM_DIR` at another checkout:
+Generate the Helmfile with a sibling checkout of `openads-helm`:
 
 ```sh
-export OPENADS_HELM_DIR=../openads-helm
-
-python3 "${OPENADS_HELM_DIR}/utils/generate_helmfile_from_compose/scripts/generate_helmfile_from_compose.py" \
+python3 ../openads-helm/utils/generate_helmfile_from_compose/scripts/generate_helmfile_from_compose.py \
   docker-compose.yml \
   --env-file .env \
   --chart-map deployment/chart-map.yaml \
   --output-dir deployment/generated
 ```
 
-Load the runtime environment before validating or deploying. In an extracted CI bundle, source the `.env` included at the archive root. `PROJECT_PATH` is required by services that use Kubernetes `hostPath` volumes. For deployment, it must point to the absolute checkout path on the selected Kubernetes node.
+Load the runtime environment, then validate and deploy. `COMPOSE_PROFILES` selects the services as in Compose. `PROJECT_PATH` must be the absolute checkout path on the Kubernetes node, as it is used for `hostPath` volumes.
 
 ```sh
-set -a
-. ./.env
-set +a
+set -a; . ./.env; set +a
 export PROJECT_PATH="$(pwd)"
 
-helmfile --file deployment/helmfile.yaml build
 helmfile --file deployment/helmfile.yaml template --concurrency 1
+helmfile --file deployment/helmfile.yaml sync
 ```
 
-`DEPLOYMENT_PREFIX` is optional for a single stack. Set it when multiple stacks share a namespace:
+## Optional settings
+
+`NODE` pins all services to one node in a multi-node cluster.
+
+`DEPLOYMENT_PREFIX` separates several stacks in one namespace. The hosts of the prefixed services must then be set as well:
 
 ```sh
 export DEPLOYMENT_PREFIX=sim1
 export CARLA_HOST=sim1-carla-server
 export TRITON_HOST=sim1-triton-server
-helmfile --file deployment/helmfile.yaml sync
-```
-
-`NODE` is optional for a single-node cluster. Set it when using a multi-node cluster:
-
-```sh
-export NODE=i2200043.ika.rwth-aachen.de
-helmfile --file deployment/helmfile.yaml sync
 ```

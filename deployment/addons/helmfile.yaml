@@ -1,5 +1,13 @@
+# Service selection from the generated Compose profiles.
+environments:
+  default:
+    values:
+      - ../generated/environments/services.yaml.gotmpl
+---
 releases:
   - name: '{{ printf "%s-middleware-bridge-policy" (env "DEPLOYMENT_PREFIX") | trimPrefix "-" }}'
     chart: charts/middleware-bridge-network-policy
+    # Deployed together with the ros-middleware-bridge (Compose profile carla).
+    condition: serviceEnabled.ros-middleware-bridge.enabled
     values:
       - values.yaml.gotmpl
