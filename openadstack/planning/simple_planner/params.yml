@@ -28,8 +28,8 @@
 
     #### regulatory element parameters
     consider_traffic_lights: False  # true: planner will consider traffic lights; false: planner will ignore traffic lights
-    consider_stop_signs: True       # true: planner will consider stop signs; false: planner will ignore stop signs
-    consider_yield_signs: True      # true: planner will consider yield signs; false: planner will ignore yield signs
+    consider_stop_signs: False      # true: planner will consider stop signs; false: planner will ignore stop signs
+    consider_yield_signs: False     # true: planner will consider yield signs; false: planner will ignore yield signs
     offset_to_stop_line: 0.0        # additional distance to stop in front of a regulatory-element stop line (m) (default: 0.0 -> stops with front of vehicle at stop line)
     ignore_stop_line_threshold: 0.5 # a stop line will be ignored if the front of the vehicle has already passed the stop line by more than this threshold (m)
     consider_future_states: False   # true: trajectory will consider forecast states of supported regulatory elements; false: only current states
@@ -44,7 +44,7 @@
     object_interaction_time_window: 0.5  # maximum time offset for counting a spatial overlap as interaction (s)
     object_velocity_reduction_step: 0.1  # velocity decrement per object-avoidance iteration (m/s)
     object_velocity_release_step: 0.5  # maximum velocity increase per cycle after hysteresis cleared object conflicts (m/s)
-    object_standstill_speed_threshold: 0.2  # publish standstill if object avoidance would require a lower speed cap (m/s)
+    object_standstill_speed_threshold: 0.5  # publish standstill if object avoidance would require a lower speed cap (m/s)
     object_velocity_release_hysteresis_cycles: 3  # number of conflict-free cycles required before increasing the remembered object speed cap
     publish_object_interaction_markers: True  # publish RViz markers for the conflict explaining the final speed reduction
 
