@@ -39,7 +39,12 @@ helmfile --file deployment/helmfile.yaml apply
 
 ## Optional settings
 
-`NODE` pins all services to one node in a multi-node cluster.
+To run all services on one node of a multi-node cluster, e.g. the node with the checkout at `PROJECT_PATH`, export its hostname as `NODE`:
+
+```sh
+kubectl get nodes -L kubernetes.io/hostname
+export NODE=worker-1
+```
 
 `DEPLOYMENT_PREFIX` separates several stacks in one namespace. The hosts of the prefixed services must then be set as well:
 
