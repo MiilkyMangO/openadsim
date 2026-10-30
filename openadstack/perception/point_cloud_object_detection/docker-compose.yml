@@ -10,7 +10,7 @@ services:
       - triton-server
     environment:
       PARAMS: /params.yml
-      TRITON_SERVER_URL: ${TRITON_HOST:-triton-server}:8001
+      TRITON_SERVER_URL: triton-server:8001
     volumes:
       - ./params.yml:/params.yml
       - type: image

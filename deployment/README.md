@@ -46,10 +46,8 @@ kubectl get nodes -L kubernetes.io/hostname
 export NODE=worker-1
 ```
 
-`DEPLOYMENT_PREFIX` separates several stacks in one namespace. The hosts of the prefixed services must then be set as well:
+`DEPLOYMENT_PREFIX` separates several stacks in one namespace. References to other services of the stack are prefixed automatically, e.g. `CARLA_HOST: carla-server` becomes `sim1-carla-server`:
 
 ```sh
 export DEPLOYMENT_PREFIX=sim1
-export CARLA_HOST=sim1-carla-server
-export TRITON_HOST=sim1-triton-server
 ```
