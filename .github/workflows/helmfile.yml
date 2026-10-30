@@ -17,8 +17,7 @@ permissions:
   packages: write
 
 jobs:
-  generate:
-    name: Helmfile
+  helmfile-oci:
     uses: openads-project/openads-helm/.github/workflows/reusable-helmfile-oci.yml@main
     with:
       compose-file: docker-compose.yml
