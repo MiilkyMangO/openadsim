@@ -1,72 +1,43 @@
-# Chart map for the Helmfile generator (openads-helm/utils/generate_helmfile_from_compose).
-#
-# Only what cannot be derived from docker-compose.yml belongs here. By default
-# the image ghcr.io/<owner>/<repo>:v<X.Y.Z> is deployed with the release chart
-# oci://ghcr.io/<owner>/<repo>/helm/<repo> at version <X.Y.Z>. An image tagged
-# latest (or latest-slim, ...) uses the newest <X.Y.Z>-main chart instead.
-
-# Services in these Compose profiles are not exported.
 excluded_profiles:
-  - gui       # local desktop GUI
-  - sumo      # no Helm charts available yet
-  - donotuse  # Compose templates and disabled services
-
-# Per-service settings, keyed by full Compose service name.
-#   chart, version       Explicit chart; replaces the default derivation.
-#   values               Merged over the generated chart values.
-#   port_policies        Per published Compose port: hostPort (default) or nodePort.
-#   volume_policies      Per mount target of a bind mount with a fixed source:
-#     copy (default)     The generator copies the file or directory into the bundle
-#                        (small text files become a ConfigMap), so the deployment
-#                        does not depend on a checkout on the node.
-#     bind               The pod mounts ${PROJECT_PATH}/<source> from the node.
-#                        Required when the container writes to the mount or several
-#                        services must see the same files, since copies are per service.
-#                        Sources built from variables (CUSTOM_OPENDRIVE, CUSTOM_LANELET,
-#                        BAG_DIRECTORY) always stay hostPath and need no entry.
+  - donotuse
+  - gui
+  - sumo
 services:
-  # Third-party images; charts are maintained in openads-helm.
+  # charts centrally maintained in https://github.com/openads-project/openads-helm/tree/main/charts
   zenoh-router:
     chart: oci://ghcr.io/openads-project/openads-helm/zenoh-router
     version: 0.2.10
   triton-server:
     chart: oci://ghcr.io/openads-project/openads-helm/triton-server
     version: "26.05"
-
-  # One carla-simulator image repository with variant tags (server-slim_v…,
-  # client_v…) and one chart per variant.
+  # nested charts in https://github.com/openads-project/carla-simulator/tree/main/deployment/helm
   carla-server:
     chart: oci://ghcr.io/openads-project/carla-simulator/helm/carla-server
     version: 0.10.0-1.1.1
   carla-client:
     chart: oci://ghcr.io/openads-project/carla-simulator/helm/carla-client
     version: 0.10.0-1.1.1
-
-  # One carla-ros-bridge image with one chart per ROS node.
-  carla-ros-bridge:
-    chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-ros-bridge
-    version: 0.10.0-1.2.0-carla-ros-bridge
-  carla-spawn-objects:
-    chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-spawn-objects
-    version: 0.10.0-1.2.0-carla-spawn-objects
+  # nested charts in https://github.com/openads-project/carla-ros-bridge/tree/main/deployment/helm
   carla-ackermann-control:
     chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-ackermann-control
     version: 0.10.0-1.2.0-carla-ackermann-control
   carla-manual-control:
     chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-manual-control
     version: 0.10.0-1.2.0-carla-manual-control
-
-  # Nested image path carla-scenario-runner/ros. No release chart for
-  # 0.10.0-1.1.2 yet, so the default-branch chart is used.
-  carla-scenario-runner-ros-manual-testing: &scenario-runner
+  carla-ros-bridge:
+    chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-ros-bridge
+    version: 0.10.0-1.2.0-carla-ros-bridge
+  carla-spawn-objects:
+    chart: oci://ghcr.io/openads-project/carla-ros-bridge/helm/carla-spawn-objects
+    version: 0.10.0-1.2.0-carla-spawn-objects
+  # nested chart in https://github.com/openads-project/carla-scenario-runner/tree/main/deployment/helm
+  carla-scenario-runner-ros-automated-testing: &scenario-runner
     chart: oci://ghcr.io/openads-project/carla-scenario-runner/helm/carla-scenario-runner-ros
-    version: 0.10.0-1.1.2-main
+    version: 0.10.0-1.1.2
     volume_policies:
-      # Writable scenario directory shared with the host.
       /scenarios: bind
-  carla-scenario-runner-ros-automated-testing: *scenario-runner
-
+  carla-scenario-runner-ros-manual-testing: *scenario-runner
+  # default chart, volume shared with monitoring.bag-recorder
   monitoring.rviz-carla:
     volume_policies:
-      # Shared with monitoring.bag-recorder, which writes its bags there.
       /docker-ros/ws/monitoring-volume: bind

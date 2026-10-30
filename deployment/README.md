@@ -34,7 +34,7 @@ set -a; . ./.env; set +a
 export PROJECT_PATH="$(pwd)"
 
 helmfile --file deployment/helmfile.yaml template --concurrency 1
-helmfile --file deployment/helmfile.yaml sync
+helmfile --file deployment/helmfile.yaml apply
 ```
 
 ## Optional settings
