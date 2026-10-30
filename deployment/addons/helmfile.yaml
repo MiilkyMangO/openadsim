@@ -6,7 +6,7 @@ environments:
 releases:
   # NetworkPolicy to isolate ros-middleware-bridges in concurrent deployments
   - name: '{{ printf "%s-middleware-bridge-policy" (env "DEPLOYMENT_PREFIX") | trimPrefix "-" }}'
-    chart: charts/middleware-bridge-network-policy
+    chart: charts/ros-middleware-bridge-network-policy
     condition: serviceEnabled.ros-middleware-bridge.enabled
     values:
       - values.yaml.gotmpl
