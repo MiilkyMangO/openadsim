@@ -1,3 +1,7 @@
+stages:
+  - build
+  - testing
+
 include:
   - remote: https://raw.githubusercontent.com/openads-project/openads-helm/main/.gitlab-ci/reusable-helmfile-oci.yml
     inputs:
@@ -11,7 +15,3 @@ include:
   - component: gitlab.ika.rwth-aachen.de/fb-fi/ops/distributed-testing/openadscale@openads
     inputs:
       scenario-search-pattern: scenario.generator/**/*.xosc
-
-stages:
-  - build
-  - testing
