@@ -9,4 +9,4 @@ releases:
     chart: charts/ros-middleware-bridge-network-policy
     condition: serviceEnabled.ros-middleware-bridge.enabled
     values:
-      - namePrefix: {{ env "DEPLOYMENT_PREFIX" | quote }}
+      - values.yaml.gotmpl
