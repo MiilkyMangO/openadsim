@@ -1,4 +1,4 @@
-name: Helmfile
+name: helmfile-oci
 
 on:
   push:
