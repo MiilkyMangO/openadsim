@@ -11,28 +11,19 @@ excluded_profiles:
   - sumo      # no Helm charts available yet
   - donotuse  # Compose templates and disabled services
 
-# Deployment of bind mounts with a fixed source, per service and mount target.
-#   copy (default)  The generator copies the file or directory into the bundle
-#                   (small text files become a ConfigMap), so the deployment
-#                   does not depend on a checkout on the node.
-#   bind            The pod mounts ${PROJECT_PATH}/<source> from the node.
-#                   Required when the container writes to the mount or several
-#                   services must see the same files, since copies are per service.
-# Sources built from variables (CUSTOM_OPENDRIVE, CUSTOM_LANELET, BAG_DIRECTORY)
-# always stay hostPath and need no entry.
-volume_policies:
-  # Writable scenario directory shared with the host.
-  carla-scenario-runner-ros-manual-testing:
-    /scenarios: bind
-  carla-scenario-runner-ros-automated-testing:
-    /scenarios: bind
-  # Shared with monitoring.bag-recorder, which writes its bags there.
-  monitoring.rviz-carla:
-    /docker-ros/ws/monitoring-volume: bind
-
 # Per-service settings, keyed by full Compose service name.
 #   chart, version       Explicit chart; replaces the default derivation.
 #   values               Merged over the generated chart values.
+#   port_policies        Per published Compose port: hostPort (default) or nodePort.
+#   volume_policies      Per mount target of a bind mount with a fixed source:
+#     copy (default)     The generator copies the file or directory into the bundle
+#                        (small text files become a ConfigMap), so the deployment
+#                        does not depend on a checkout on the node.
+#     bind               The pod mounts ${PROJECT_PATH}/<source> from the node.
+#                        Required when the container writes to the mount or several
+#                        services must see the same files, since copies are per service.
+#                        Sources built from variables (CUSTOM_OPENDRIVE, CUSTOM_LANELET,
+#                        BAG_DIRECTORY) always stay hostPath and need no entry.
 services:
   # Third-party images; charts are maintained in openads-helm.
   zenoh-router:
@@ -47,21 +38,6 @@ services:
   carla-server:
     chart: oci://ghcr.io/openads-project/carla-simulator/helm/carla-server
     version: 0.10.0-1.1.1
-    values:
-      # Compose publishes the port on the host. In Kubernetes the ClusterIP
-      # service is sufficient and must not get a fixed NodePort.
-      ports: []
-      # CARLA uses the fixed port 2000 and the two following ports.
-      expose:
-        - port: 2000
-          targetPort: 2000
-          protocol: TCP
-        - port: 2001
-          targetPort: 2001
-          protocol: TCP
-        - port: 2002
-          targetPort: 2002
-          protocol: TCP
   carla-client:
     chart: oci://ghcr.io/openads-project/carla-simulator/helm/carla-client
     version: 0.10.0-1.1.1
@@ -85,4 +61,12 @@ services:
   carla-scenario-runner-ros-manual-testing: &scenario-runner
     chart: oci://ghcr.io/openads-project/carla-scenario-runner/helm/carla-scenario-runner-ros
     version: 0.10.0-1.1.2-main
+    volume_policies:
+      # Writable scenario directory shared with the host.
+      /scenarios: bind
   carla-scenario-runner-ros-automated-testing: *scenario-runner
+
+  monitoring.rviz-carla:
+    volume_policies:
+      # Shared with monitoring.bag-recorder, which writes its bags there.
+      /docker-ros/ws/monitoring-volume: bind
