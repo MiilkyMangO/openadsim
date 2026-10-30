@@ -11,7 +11,9 @@ This directory contains the OpenADSim-specific inputs and manual additions for t
 
 ## CI
 
-The [GitHub workflow](../.github/workflows/helmfile-oci.yml) and the [GitLab pipeline](../.gitlab-ci.yml) use the reusable templates from `openads-helm`. They generate `deployment/generated`, validate it with `helmfile`, and package the `deployment` directory together with the root `.env` as a bundled CI artifact. Builds from the default branch and version tags are additionally published as an OCI artifact.
+The [GitHub workflow](../.github/workflows/helmfile-oci.yml) and the [GitLab pipeline](../.gitlab-ci.yml) use the reusable templates from `openads-helm`. They generate `deployment/generated`, validate it with `helmfile`, and publish the `deployment` directory together with the root `.env` as OCI bundle `<registry>/<repository>/helmfile`, tagged with the branch or tag name and `sha-<commit>`. Pull requests publish under their source branch name.
+
+The scheduled [cleanup workflow](../.github/workflows/ghcr-cleanup.yml) deletes bundles older than one month except `main` and `vX.Y.Z`. On GitLab, the container registry cleanup policy of the project applies the same rule.
 
 ## Local usage
 
