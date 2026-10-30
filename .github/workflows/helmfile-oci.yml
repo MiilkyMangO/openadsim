@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   helmfile-oci:
-    uses: openads-project/openads-helm/.github/workflows/reusable-helmfile-oci.yml@feature/always-publish-helmfile-oci # TODO: Switch back to main when merged
+    uses: openads-project/openads-helm/.github/workflows/reusable-helmfile-oci.yml@main
     with:
       compose-file: docker-compose.yml
       include-env-file-in-bundle: true

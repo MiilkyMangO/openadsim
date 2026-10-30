@@ -3,10 +3,8 @@ stages:
   - testing
 
 include:
-  # TODO: Switch back to main when feature/always-publish-helmfile-oci of openads-helm is merged
-  - remote: https://raw.githubusercontent.com/openads-project/openads-helm/feature/always-publish-helmfile-oci/.gitlab-ci/reusable-helmfile-oci.yml
+  - remote: https://raw.githubusercontent.com/openads-project/openads-helm/main/.gitlab-ci/reusable-helmfile-oci.yml
     inputs:
-      openads-helm-ref: feature/always-publish-helmfile-oci # TODO: Remove when merged into main
       compose-file: docker-compose.yml
       include-env-file-in-bundle: true
       chart-map: deployment/chart-map.yaml

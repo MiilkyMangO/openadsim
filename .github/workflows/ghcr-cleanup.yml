@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   helmfile:
-    uses: openads-project/openads-helm/.github/workflows/reusable-helmfile-cleanup.yml@feature/always-publish-helmfile-oci # TODO: Switch back to main when merged
+    uses: openads-project/openads-helm/.github/workflows/reusable-helmfile-cleanup.yml@main
 
   gui:
     name: Cleanup gui
