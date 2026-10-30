@@ -18,6 +18,8 @@ The [GitHub workflow](../.github/workflows/helmfile-oci.yml) and the [GitLab pip
 Generate the Helmfile with a sibling checkout of `openads-helm`:
 
 ```sh
+# openadsim$
+git clone https://github.com/openads-project/openads-helm ../openads-helm
 python3 ../openads-helm/utils/generate_helmfile_from_compose/scripts/generate_helmfile_from_compose.py \
   docker-compose.yml \
   --env-file .env \
