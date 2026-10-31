@@ -19,8 +19,7 @@ services:
     environment:
       USE_SIM_TIME: ${USE_SIM_TIME:-true}
       CARLA_HOST: carla-server
-      # CARLA_PORT: 2000
-      CARLA_PORT: ${CARLA_PORT:-2000}
+      CARLA_PORT: 2000
       ROLE_NAME: ego_vehicle
       SCENARIO_RUNNER_PATH: /docker-ros/additional-files
       WAIT_FOR_EGO: true

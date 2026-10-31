@@ -15,9 +15,6 @@ services:
     extends:
       file: ../../openadstack/openadstack/utils/compose/docker-compose.template.yml
       service: gpu-x11-service
-    environment:
-      CARLA_HOST: carla-server
-      CARLA_PORT: ${CARLA_PORT:-2000}
     command:
       - /bin/bash
       - -ic
