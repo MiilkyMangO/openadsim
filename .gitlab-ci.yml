@@ -1,0 +1,17 @@
+stages:
+  - build
+  - testing
+
+include:
+  - remote: https://raw.githubusercontent.com/openads-project/openads-helm/main/.gitlab-ci/reusable-helmfile-oci.yml
+    inputs:
+      compose-file: docker-compose.yml
+      include-env-file-in-bundle: true
+      chart-map: deployment/chart-map.yaml
+      profiles: carla,traffic,automated-testing,no-perception,planning
+      output-dir: deployment/generated
+      helmfile-entrypoint: deployment/helmfile.yaml
+      bundle-dir: deployment
+  - component: gitlab.ika.rwth-aachen.de/fb-fi/ops/openadscale/openadscale@main
+    inputs:
+      scenario-search-pattern: scenario.generator/**/*.xosc

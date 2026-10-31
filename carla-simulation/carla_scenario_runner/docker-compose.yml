@@ -18,10 +18,8 @@ services:
     image: ghcr.io/openads-project/carla-scenario-runner/ros:v0.10.0-1.1.2
     environment:
       USE_SIM_TIME: ${USE_SIM_TIME:-true}
-      # CARLA_HOST: carla-server
-      CARLA_HOST: ${CARLA_HOST:-carla-server}
-      # CARLA_PORT: 2000
-      CARLA_PORT: ${CARLA_PORT:-2000}
+      CARLA_HOST: carla-server
+      CARLA_PORT: 2000
       ROLE_NAME: ego_vehicle
       SCENARIO_RUNNER_PATH: /docker-ros/additional-files
       WAIT_FOR_EGO: true
@@ -64,6 +62,9 @@ services:
           SCENARIOS_DIR="$$(dirname "/$${CUSTOM_OPENDRIVE#/}")"
         fi
         exec ros2 launch carla_ros_scenario_runner carla_ros_scenario_runner_with_selection.launch.py \
+          use_sim_time:=$${USE_SIM_TIME} \
+          host:=$${CARLA_HOST} \
+          port:=$${CARLA_PORT} \
           scenario_runner_path:=$${SCENARIO_RUNNER_PATH} \
           scenarios_dir:=$${SCENARIOS_DIR}
 

@@ -16,8 +16,6 @@ services:
       file: ../../openadstack/openadstack/utils/compose/docker-compose.template.yml
       service: ros2-x11-service
     environment:
-      CARLA_HOST: ${CARLA_HOST:-carla-server}
-      CARLA_PORT: ${CARLA_PORT:-2000}
       MAP: ${MAP:-}
       CUSTOM_OPENDRIVE: ${CUSTOM_OPENDRIVE:-}
       CUSTOM_LANELET: ${CUSTOM_LANELET:-}
@@ -44,6 +42,9 @@ services:
           SCENARIOS_DIR="$$(dirname "/$${CUSTOM_OPENDRIVE#/}")"
         fi
         exec ros2 launch carla_ros_scenario_runner carla_ros_scenario_runner_with_selection.launch.py \
+          use_sim_time:=$${USE_SIM_TIME} \
+          host:=$${CARLA_HOST} \
+          port:=$${CARLA_PORT} \
           scenario_runner_path:=$${SCENARIO_RUNNER_PATH} \
           scenarios_dir:=$${SCENARIOS_DIR}
 
