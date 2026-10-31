@@ -37,7 +37,7 @@ services:
     volume_policies:
       /scenarios: bind
   carla-scenario-runner-ros-manual-testing: *scenario-runner
-  # default chart, volume shared with monitoring.bag-recorder
+  # chart derived from image, writable volume mounted from host
   monitoring.rviz-carla:
     volume_policies:
       /docker-ros/ws/monitoring-volume: bind
