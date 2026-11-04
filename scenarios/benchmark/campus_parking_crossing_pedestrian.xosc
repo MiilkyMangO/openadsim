@@ -122,8 +122,8 @@
         </Private>
       </Actions>
     </Init>
-    <Story name="story_route_test_road21_walkers">
-      <Act name="act_route_test_road21_walkers">
+    <Story name="story_main">
+      <Act name="act_main">
         <ManeuverGroup maximumExecutionCount="1" name="pedestrian_2_maneuver_group">
           <Actors selectTriggeringEntities="false">
             <EntityRef entityRef="pedestrian_2" />
