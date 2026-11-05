@@ -1,0 +1,10 @@
+file,scenario,classification
+campus_accident_two_ways.xosc,AccidentTwoWays,dev
+campus_opposite_vehicle_taking_priority.xosc,OppositeVehicleTakingPriority,dev
+campus_parking_crossing_pedestrian.xosc,ParkingCrossingPedestrian,dev
+campus_occluded_hard_brake.xosc,OccludedHardBrake,dev
+variants/accident_two_ways/oncoming1111.xosc,AccidentTwoWays,dev
+variants/opposite_vehicle_taking_priority/target1389.xosc,OppositeVehicleTakingPriority,critical
+variants/parking_crossing_pedestrian/ttc33.xosc,ParkingCrossingPedestrian,dev
+variants/parking_crossing_pedestrian/walker14.xosc,ParkingCrossingPedestrian,dev
+variants/occluded_hard_brake/tau15.xosc,OccludedHardBrake,dev
